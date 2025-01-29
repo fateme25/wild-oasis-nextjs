@@ -10,7 +10,7 @@ import {
 import convertToSubcurrency from "@/app/_lib/convertToSubcurrency";
 import SpinnerMini from "./SpinnerMini";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+// const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 function CheckoutForm({ amount }) {
   const stripe = useStripe();
@@ -29,15 +29,14 @@ function CheckoutForm({ amount }) {
       body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data));
+      .then((data) => setClientSecret(data.clientSecret));
   }, [amount]);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
-    console.log(clientSecret)
+    // console.log(clientSecret);
 
     if (!stripe || !elements) {
       return;
@@ -53,9 +52,9 @@ function CheckoutForm({ amount }) {
 
     const { error } = await stripe.confirmPayment({
       elements,
-      // clientSecret,
+      clientSecret,
       confirmParams: {
-        return_url: `${baseUrl}/payment-success?amount=${amount}`,
+        return_url: `https://the-wild-oasis-next-js-delta.vercel.app/payment-success?amount=${amount}`,
       },
     });
 
@@ -78,10 +77,10 @@ function CheckoutForm({ amount }) {
       </div>
     );
   return (
-    <form className="bg-white p-2 rounded-md" onSubmit={handleSubmit}>
+    <form className="p-8 rounded-md" onSubmit={handleSubmit}>
       {clientSecret && <PaymentElement />}
       <button
-        className="text-white w-full p-5 bg-black mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
+        className="text-white w-full p-5 bg-gradient-to-tr from-accent-200 to-accent-500 mt-6 mb-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
         disabled={!stripe || loading}
       >
         {!loading ? `Pay $${amount}` : "Processing..."}
