@@ -54,7 +54,7 @@ function CheckoutForm({ amount }) {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `https://the-wild-oasis-next-js-delta.vercel.app/payment-success?amount=${amount}`,
+        return_url: `https://the-wild-oasis-next-js-delta.vercel.app/api/payment-success?amount=${amount}`,
       },
     });
 
